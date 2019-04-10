@@ -1,0 +1,15 @@
+LEMUR =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = srv-dbastudy-ora01)(PORT = 1521))
+    (CONNECT_DATA =
+      (SID = LEMUR)
+    )
+  )
+
+LEMUR_PRD =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = srv-dbastudy-ora01)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVICE_NAME = lemur_prd)
+    )
+  )
