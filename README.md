@@ -6,5 +6,5 @@
   - backup_and_recovery: резервное копирование и восстановление [backup_and_recovery]
 
    [Oracle Listener]: <https://github.com/dalukyanov/Oracle-DBA-Scripts/tree/master/listener/samples>
-   [backup_and_recovery]: <https://github.com/dalukyanov/Oracle-DBA-Scripts/tree/prepare/backup_and_recovery>
+   [backup_and_recovery]: <https://github.com/dalukyanov/Oracle-DBA-Scripts/tree/master/backup_and_recovery>
 
