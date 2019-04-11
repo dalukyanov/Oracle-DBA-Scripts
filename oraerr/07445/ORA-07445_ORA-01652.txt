@@ -1,0 +1,109 @@
+В алерт-логе БД имеем:
+
+Thu Apr 11 07:27:57 2019
+ORA-1652: unable to extend temp segment by 128 in tablespace                 TEMP
+Exception [type: SIGSEGV, Address not mapped to object] [ADDR:0x0] [PC:0x1996340, kditpin()+54] [flags: 0x0, count: 1]
+Errors in file /u01/app/oracle/diag/rdbms/drweb/DRWEB/trace/DRWEB_ora_32564.trc  (incident=39514):
+ORA-07445: exception encountered: core dump [kditpin()+54] [SIGSEGV] [ADDR:0x0] [PC:0x1996340] [Address not mapped to object] []
+ORA-01652: unable to extend temp segment by 128 in tablespace TEMP
+Incident details in: /u01/app/oracle/diag/rdbms/drweb/DRWEB/incident/incdir_39514/DRWEB_ora_32564_i39514.trc
+
+В /u01/app/oracle/diag/rdbms/drweb/DRWEB/incident/incdir_39514/DRWEB_ora_32564_i39514.trc:
+
+...
+Dump continued from file: /u01/app/oracle/diag/rdbms/drweb/DRWEB/trace/DRWEB_ora_32564.trc
+ORA-07445: exception encountered: core dump [kditpin()+54] [SIGSEGV] [ADDR:0x0] [PC:0x1996340] [Address not mapped to object] []
+ORA-01652: unable to extend temp segment by 128 in tablespace TEMP
+
+========= Dump for incident 39514 (ORA 7445 [kditpin()+54]) ========
+----- Beginning of Customized Incident Dump(s) -----
+Exception [type: SIGSEGV, Address not mapped to object] [ADDR:0x0] [PC:0x1996340, kditpin()+54] [flags: 0x0, count: 1]
+Registers:
+%rax: 0x0000000000000000 %rbx: 0x000000000c12e220 %rcx: 0x0000000000000002
+%rdx: 0x0000000000000000 %rdi: 0x000000000c12e220 %rsi: 0x00007f71cfaa5b20
+%rsp: 0x00007fff0ee83b80 %rbp: 0x00007fff0ee83cb0  %r8: 0x000000000a164788
+ %r9: 0x00007f71cfc55c70 %r10: 0x00007f71cfc547b8 %r11: 0x0000000000000070
+%r12: 0x0000000000001fe8 %r13: 0x000000000c12e220 %r14: 0x00007f71cfaa5b20
+%r15: 0x00007fff0ee83cc0 %rip: 0x0000000001996340 %efl: 0x0000000000010202
+  kditpin()+40 (0x1996332) movzwl 0x1a(%r14),%r12d
+  kditpin()+45 (0x1996337) mov 0x24(%r14),%ecx
+  kditpin()+49 (0x199633b) and $2,%ecx
+  kditpin()+52 (0x199633e) je 0x199636b
+> kditpin()+54 (0x1996340) movzbl (%rdx),%eax
+  kditpin()+57 (0x1996343) cmp $1,%eax
+  kditpin()+60 (0x1996346) jne 0x199636b
+  kditpin()+62 (0x1996348) add $1,%rdx
+  kditpin()+66 (0x199634c) mov (%rdx),%rax
+
+*** 2019-04-11 07:27:58.861
+dbkedDefDump(): Starting a non-incident diagnostic dump (flags=0x3, level=3, mask=0x0)
+----- Current SQL Statement for this session (sql_id=bmfmcnf831qyc) -----
+SELECT * FROM admin_activity
+
+----- Call Stack Trace -----
+calling              call     entry                argument values in hex
+location             type     point                (? means dubious value)
+-------------------- -------- -------------------- ----------------------------
+skdstdst()+41        call     kgdsdst()            000000000 ? 000000000 ?
+                                                   7F71CFD9FDC0 ? 7F71CFD9FE98 ?
+                                                   7F71CFDA4940 ? 000000003 ?
+ksedst1()+103        call     skdstdst()           000000000 ? 000000000 ?
+                                                   7F71CFD9FDC0 ? 7F71CFD9FE98 ?
+                                                   7F71CFDA4940 ? 000000003 ?
+ksedst()+39          call     ksedst1()            000000001 ? 000000001 ?
+                                                   7F71CFD9FDC0 ? 7F71CFD9FE98 ?
+                                                   7F71CFDA4940 ? 000000003 ?
+...
+
+
+Нас здесь интересуют аргументы kditpin()+54. Их можно вводить в соотвествующее поле поиска в ORA-600/ORA-7445/ORA-700 Error Look-up Tool (Doc ID 153788.1)
+Находим, что это баг Bug 9756271 - Dump on kditpin (Doc ID 9756271.8)
+Исправлен в 11.2.0.4.4 (Oct 2014) Database Patch Set Update (DB PSU)
+
+В этой БД, как оказалось, не стоит никакой PSU.
+
+> $ORACLE_HOME/OPatch/opatch lsinventory
+Oracle Interim Patch Installer version 11.2.0.3.4
+Copyright (c) 2012, Oracle Corporation.  All rights reserved.
+
+
+Oracle Home       : /u01/app/oracle/product/11.2.0/dbhome_1
+Central Inventory : /u01/app/oraInventory
+   from           : /u01/app/oracle/product/11.2.0/dbhome_1/oraInst.loc
+OPatch version    : 11.2.0.3.4
+OUI version       : 11.2.0.4.0
+Log file location : /u01/app/oracle/product/11.2.0/dbhome_1/cfgtoollogs/opatch/opatch2019-04-11_16-50-38PM_1.log
+
+Lsinventory Output file location : /u01/app/oracle/product/11.2.0/dbhome_1/cfgtoollogs/opatch/lsinv/lsinventory2019-04-11_16-50-38PM.txt
+
+--------------------------------------------------------------------------------
+Installed Top-level Products (1):
+
+Oracle Database 11g                                                  11.2.0.4.0
+There are 1 products installed in this Oracle Home.
+
+
+There are no Interim patches installed in this Oracle Home.
+
+
+--------------------------------------------------------------------------------
+
+OPatch succeeded.
+
+
+Решение:
+
+Поставить 11.2.0.4.4 (Oct 2014) Database Patch Set Update (DB PSU) и выше для исправления Bug 9756271 - Dump on kditpin (Doc ID 9756271.8)
+
+
+Ради интереса:
+
+Изучаем трейс. Сбой произошёл в данной строке кода:
+
+> kditpin()+54 (0x1996340) movzbl (%rdx),%eax
+
+
+Здесь происходит копирование значения, которое находится по адресу, хранимом в регистре %rdx в регистр %eax. Однако, в регистре %rdx хранится адрес 0x0000000000000000. Нужный адрес никто в него ранее не внёс.
+Получаем ошибку о недопустимой адрессации от операционной системы.
+
+SIGSEGV, Address not mapped to object
