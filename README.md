@@ -2,9 +2,11 @@
 
 Здесь я буду понемногу добавлять различные скрипты из накопившегося и из того, что сейчас использую в работе. Данный документ - моя первая проба написания в Markdown.
 
-  - listener/samples: примеры конфигурации [Oracle Listener]
-  - backup_and_recovery: резервное копирование и восстановление [backup_and_recovery]
+  - [listener/samples]: примеры конфигурации Oracle Listener
+  - [backup_and_recovery] - резервное копирование и восстановление
+  - [oraerr] - диагностика ORA-, TNS-, RMAN- и прочих ошибок.
 
-   [Oracle Listener]: <https://github.com/dalukyanov/Oracle-DBA-Scripts/tree/master/listener/samples>
+   [listener/samples]: <https://github.com/dalukyanov/Oracle-DBA-Scripts/tree/master/listener/samples>
    [backup_and_recovery]: <https://github.com/dalukyanov/Oracle-DBA-Scripts/tree/master/backup_and_recovery>
+   [oraerr]: <https://github.com/dalukyanov/Oracle-DBA-Scripts/tree/master/oraerr>
 
