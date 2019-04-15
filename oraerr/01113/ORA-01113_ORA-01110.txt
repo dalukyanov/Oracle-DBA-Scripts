@@ -1,0 +1,38 @@
+ORA-01113: file 1 needs media recovery при том, что файлы консистентны.
+
+Проблема
+
+SQL> alter database open resetlogs;
+alter database open resetlogs
+*
+ERROR at line 1:
+ORA-01113: file 1 needs media recovery
+ORA-01110: data file 1: '+DATA/test/datafile/system.3526.1005658309'
+
+При этом видим, что файлы консистентны. Должно открыться.
+
+SQL> select CHECKPOINT_CHANGE#,count(*) from v$datafile_header group by CHECKPOINT_CHANGE#;
+
+CHECKPOINT_CHANGE#           COUNT(*)
+------------------ ------------------
+    10158822344122                 40
+
+	
+Решение
+
+Ходил вокруг, да около. Сломал голову. Пробовал AUTO. Не сработало. В общем, надо отмемить процесс восстановления.
+
+	
+SQL> recover using backup controlfile until cancel;
+ORA-00279: change 10158822344122 generated at 04/15/2019 16:56:14 needed for thread 1
+ORA-00289: suggestion : +DATA
+ORA-00280: change 10158822344122 for thread 1 is in sequence #96945
+
+
+Specify log: {<RET>=suggested | filename | AUTO | CANCEL}
+cancel
+Media recovery cancelled.
+
+SQL> alter database open resetlogs;
+
+Database altered.
