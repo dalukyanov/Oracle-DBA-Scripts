@@ -22,6 +22,22 @@ db_recovery_file_dest                string      /u01/oracle/app/fast_recovery_
 db_recovery_file_dest_size           big integer 35G
 ```
 
+Проверяем, чем фактически занята Flash Recovery Area
+
+```sql
+SQL> select * from v$flash_recovery_area_usage;
+
+FILE_TYPE            PERCENT_SPACE_USED PERCENT_SPACE_RECLAIMABLE NUMBER_OF_FILES
+-------------------- ------------------ ------------------------- ---------------
+CONTROL FILE                          0                         0               0
+REDO LOG                              2                         0               8
+ARCHIVED LOG                         77                        77             426
+BACKUP PIECE                          0                         0               0
+IMAGE COPY                            0                         0               0
+FLASHBACK LOG                         1                         0               2
+FOREIGN ARCHIVED LOG                  0                         0               0
+```
+
 Проверка, что в разделе достаточно места
 
 ```bash
