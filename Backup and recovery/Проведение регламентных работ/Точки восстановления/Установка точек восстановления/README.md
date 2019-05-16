@@ -74,6 +74,14 @@ BEFORE_20190507_01
 
 ```
 
+Можно запустить накат логов, чтобы стендбай был актуален во время проведения работ.
+
+```sql
+SQL> alter database recover managed standby database using current logfile disconnect from session;
+
+Database altered.
+```
+
 
 ## На праймари
 
