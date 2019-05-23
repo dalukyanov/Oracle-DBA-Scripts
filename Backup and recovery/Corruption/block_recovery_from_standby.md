@@ -1,13 +1,13 @@
 # Block recovery from standby
 
-## Ïîäãîòîâèòåëüíûå íàñòðîéêè
+## ÐŸÐ¾Ð´Ð³Ð¾Ñ‚Ð¾Ð²Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ñ‹Ðµ Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ¸
 
-Ïåðåâîäèì ïåðåäà÷ó ëîãîâ â ðåæèì LGWR SYNC.
-Ñòåíäáàé îòêðûâàåì â ðåæèìå READ ONLY WITH APPLY
+ÐŸÐµÑ€ÐµÐ²Ð¾Ð´Ð¸Ð¼ Ð¿ÐµÑ€ÐµÐ´Ð°Ñ‡Ñƒ Ð»Ð¾Ð³Ð¾Ð² Ð² Ñ€ÐµÐ¶Ð¸Ð¼ LGWR SYNC.
+Ð¡Ñ‚ÐµÐ½Ð´Ð±Ð°Ð¹ Ð¾Ñ‚ÐºÑ€Ñ‹Ð²Ð°ÐµÐ¼ Ð² Ñ€ÐµÐ¶Ð¸Ð¼Ðµ READ ONLY WITH APPLY
 
-## Êàê ãåíåðèðîâàòü ROWID
+## ÐšÐ°Ðº Ð³ÐµÐ½ÐµÑ€Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ ROWID
 
-Îøèáêè â V$DATABASE_BLOCK_CORRUPTION
+ÐžÑˆÐ¸Ð±ÐºÐ¸ Ð² V$DATABASE_BLOCK_CORRUPTION
 
 ```sql
 SQL> select * from v$database_block_corruption;
@@ -20,7 +20,7 @@ SQL> select * from v$database_block_corruption;
         17    3320406          1                  0 FRACTURED
 ```
 
-### Îïðåäåëÿåì áèòûé îáúåêò
+### ÐžÐ¿Ñ€ÐµÐ´ÐµÐ»ÑÐµÐ¼ Ð±Ð¸Ñ‚Ñ‹Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚
 
 ```sql
 select owner, segment_type, segment_name 
@@ -33,7 +33,7 @@ OWNER                          SEGMENT_TYPE       SEGMENT_NAME
 RSBANK_EVS                     TABLE              DOPRDOCS_DBT
 ```
 
-### ID îáúåêòà:
+### ID Ð¾Ð±ÑŠÐµÐºÑ‚Ð°:
 
 ```sql
 SQL> select DATA_OBJECT_ID from dba_objects where OWNER='RSBANK_EVS' and OBJECT_NAME='DOPRDOCS_DBT';
@@ -43,7 +43,7 @@ DATA_OBJECT_ID
       12648237
 ```
 
-### Îòíîñèòåëüíûé íîìåð ôàéëà äàííûõ
+### ÐžÑ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ñ‹Ð¹ Ð½Ð¾Ð¼ÐµÑ€ Ñ„Ð°Ð¹Ð»Ð° Ð´Ð°Ð½Ð½Ñ‹Ñ…
 
 ```sql
 SQL> select RELATIVE_FNO from dba_data_files where FILE_ID=17;
@@ -53,7 +53,7 @@ RELATIVE_FNO
           17
 ```
 
-### Ãåíåðèðóåì ROWID ïî ïîëó÷åííûì äàííûì
+### Ð“ÐµÐ½ÐµÑ€Ð¸Ñ€ÑƒÐµÐ¼ ROWID Ð¿Ð¾ Ð¿Ð¾Ð»ÑƒÑ‡ÐµÐ½Ð½Ñ‹Ð¼ Ð´Ð°Ð½Ð½Ñ‹Ð¼
 
 ```sql
 set serveroutput on
@@ -67,7 +67,7 @@ end;
 /
 ```
 
-### Îáðàùàåìñÿ ê áèòîìó áëîêó ïî ROWID
+### ÐžÐ±Ñ€Ð°Ñ‰Ð°ÐµÐ¼ÑÑ Ðº Ð±Ð¸Ñ‚Ð¾Ð¼Ñƒ Ð±Ð»Ð¾ÐºÑƒ Ð¿Ð¾ ROWID
 
 ```sql
 SQL> select count(*) from RSBANK_EVS.DOPRDOCS_DBT where rowid='AAwP8tAARAAMqpWAAB';
@@ -78,7 +78,7 @@ ORA-01578: ORACLE data block corrupted (file # 17, block # 3320406)
 ORA-01110: data file 17: '/EV_prim/oradata/users09.dbf'
 ```
 
-### Ïîñëå àâòîìàòè÷åñêîãî âîññòàíîâëåíèÿ áëîêà äåëàåì BACKUP VALIDATE.
+### ÐŸÐ¾ÑÐ»Ðµ Ð°Ð²Ñ‚Ð¾Ð¼Ð°Ñ‚Ð¸Ñ‡ÐµÑÐºÐ¾Ð³Ð¾ Ð²Ð¾ÑÑÑ‚Ð°Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ñ Ð±Ð»Ð¾ÐºÐ° Ð´ÐµÐ»Ð°ÐµÐ¼ BACKUP VALIDATE.
 
 ```sql
 RMAN> backup validate check logical datafile 17;
