@@ -26,3 +26,5 @@ $(MK_EMAGENT_NMECTL)
 ```
 $(MK_EMAGENT_NMECTL) -lnnz11
 ```
+
+Жмём Retry.
