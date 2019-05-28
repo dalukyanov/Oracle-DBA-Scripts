@@ -1,0 +1,9 @@
+USERID='/ as sysdba'
+directory=DUMP
+schemas=SCHEMA_NAME
+flashback_time=systimestamp
+logfile=exp_SCHEMA_NAME.log
+dumpfile=exp_SCHEMA_NAME_%U.dump
+PARALLEL=4
+REUSE_DUMPFILES=Y
+COMPRESSION=ALL
