@@ -2,8 +2,12 @@
 
 ## Проблема
 
+В alert-логе ошибки вида
+
+```
 Wed Jun 05 18:12:55 2019
 PING[ARC1]: Heartbeat failed to connect to standby 'inf_stb'. Error is 16047.
+```
 
 ## Диагностика
 
