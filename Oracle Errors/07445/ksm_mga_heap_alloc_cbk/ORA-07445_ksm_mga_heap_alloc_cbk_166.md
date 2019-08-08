@@ -58,16 +58,7 @@ ACTION NAME:(Automatic Report Flush)
 
 ## Решение:
 
-Обходное решение - отключить механизм Automatic Report Flush
-
-```
-alter system set "_report_capture_cycle_time" = 0;
-exec DBMS_AUTO_REPORT.FINISH_REPORT_CAPTURE;
-```
-
-## P.S.
-
-Обнаружили, что имеется ошибка в настройках разделяемой памяти. /dev/shm выдано 16 байт вместо 14 ГБ планируемых. Возможно, эти события связаны.
+Откючение механизма Automatic Report не помогло. Обнаружили, что имеется ошибка в настройках разделяемой памяти. /dev/shm выдано 16 байт вместо 14 ГБ планируемых.
 
 ```
 more /etc/fstab
@@ -75,3 +66,5 @@ more /etc/fstab
 none                    /dev/shm        tmpfs   defaults,size=16  0 0
 ...
 ```
+
+После изменения параметра перезагрузили сервер. Проблема ушла.
