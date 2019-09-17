@@ -2,10 +2,12 @@
 
 ## Версия
 
+```
 11.2.0.4.0
 SUSE Linux Enterprise Server 12 (x86_64)
 VERSION = 12
 PATCHLEVEL = 3
+```
 
 ## Изменения
 
