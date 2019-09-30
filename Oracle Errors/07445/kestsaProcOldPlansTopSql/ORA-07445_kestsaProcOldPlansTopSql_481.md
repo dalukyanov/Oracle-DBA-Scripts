@@ -1,5 +1,7 @@
 # Ошибки ORA-07445: exception encountered: core dump [kestsaProcOldPlansTopSql()+481] [SIGSEGV] [ADDR:0x0] [PC:0x9879F21] [Address not mapped to object] []
 
+> !!!! Описанное ниже не помогло !!!!
+
 ## Версия
 
 ```
