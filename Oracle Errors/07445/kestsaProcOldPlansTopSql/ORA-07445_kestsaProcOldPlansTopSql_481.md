@@ -141,7 +141,7 @@ DECLARE job BINARY_INTEGER := :job;  next_date TIMESTAMP WITH TIME ZONE := :myda
 
 ## Решение:
 
-Не уверень, что все из указанных действий необходимы, но что-то из этого решило проблему.
+Не уверен, что все из указанных действий необходимы, но что-то из этого решило проблему.
 
 1. Согласно How To Reload the SYS.DBMS_STATS Package (Doc ID 1310365.1) перестроил пакет SYS.DBMS_STATS
 
@@ -168,7 +168,7 @@ select object_name from dba_objects where status='INVALID';
 @?/rdbms/admin/utlrp.sql
 ```
 
-2. Перестроил системную статистику.
+2. Перестраиваем системную статистику.
 
 ```
 exec dbms_stats.gather_fixed_objects_stats;
