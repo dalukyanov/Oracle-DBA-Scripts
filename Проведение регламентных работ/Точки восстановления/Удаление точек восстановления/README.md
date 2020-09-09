@@ -15,13 +15,13 @@ SELECT NAME, SCN, TIME, DATABASE_INCARNATION#, GUARANTEE_FLASHBACK_DATABASE, STO
 
 NAME                                                  SCN TIME                                     DATABASE_INCARNATION# GUA   STORAGE_SIZE
 ---------------------------------------- ---------------- ---------------------------------------- --------------------- --- --------------
-BEFORE_20190507_01                              120242924 07-MAY-19 10.51.36.000000000 AM                              2 YES      209715200
+before_update                              120242924 07-MAY-19 10.51.36.000000000 AM                              2 YES      209715200
 ```
 
 Удаление точки:
 
 ```sql
-drop restore point BEFORE_20190507_01;
+drop restore point before_update;
 
 Restore point dropped.
 ```
@@ -43,7 +43,7 @@ SELECT NAME, SCN, TIME, DATABASE_INCARNATION#, GUARANTEE_FLASHBACK_DATABASE, STO
 
 NAME                                                  SCN TIME                                     DATABASE_INCARNATION# GUA   STORAGE_SIZE
 ---------------------------------------- ---------------- ---------------------------------------- --------------------- --- --------------
-BEFORE_20190507_01                              120242924 07-MAY-19 10.51.36.000000000 AM                              2 YES      209715200
+before_update                              120242924 07-MAY-19 10.51.36.000000000 AM                              2 YES      209715200
 ```
 
 Перезагружаем экземпляр.
@@ -77,7 +77,7 @@ Database altered.
 Удаляем точку восстановления:
 
 ```sql
-SQL> drop restore point BEFORE_20190507_01;
+SQL> drop restore point before_update;
 
 Restore point dropped.
 ```

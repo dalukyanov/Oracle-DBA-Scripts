@@ -36,11 +36,11 @@ MRP0      APPLYING_LOG
 Если попытаться создать точку при включённом процессе наката, ругается:
 
 ```sql
-SQL> CREATE RESTORE POINT before_20190507_01 GUARANTEE FLASHBACK DATABASE;
-CREATE RESTORE POINT before_20190507_01 GUARANTEE FLASHBACK DATABASE
+SQL> CREATE RESTORE POINT before_update GUARANTEE FLASHBACK DATABASE;
+CREATE RESTORE POINT before_update GUARANTEE FLASHBACK DATABASE
 *
 ERROR at line 1:
-ORA-38784: Cannot create restore point 'BEFORE_20190507_01'.
+ORA-38784: Cannot create restore point 'BEFORE_update'.
 ORA-01153: an incompatible media recovery is active
 ```
 
@@ -55,7 +55,7 @@ Database altered.
 Устанавливаем точку восстановления:
 
 ```sql
-SQL> CREATE RESTORE POINT before_20190507_01 GUARANTEE FLASHBACK DATABASE;
+SQL> CREATE RESTORE POINT before_update GUARANTEE FLASHBACK DATABASE;
 
 Restore point created.
 ```
@@ -69,7 +69,7 @@ NAME
 --------------------------------------------------------------------------------------------------------------------------------
                SCN TIME                                                                        DATABASE_INCARNATION# GUA       STORAGE_SIZE
 ------------------ --------------------------------------------------------------------------- --------------------- --- ------------------
-BEFORE_20190507_01
+before_update
          120242243 07-MAY-19 10.51.13.000000000 AM                                                                 2 YES          104857600
 
 ```
@@ -106,7 +106,7 @@ no rows selected
 Устанавливаем точку восстановления:
 
 ```sql
-SQL> CREATE RESTORE POINT before_20190507_01 GUARANTEE FLASHBACK DATABASE;
+SQL> CREATE RESTORE POINT before_update GUARANTEE FLASHBACK DATABASE;
 
 Restore point created.
 ```
@@ -120,7 +120,7 @@ NAME
 --------------------------------------------------------------------------------------------------------------------------------
               SCN TIME                                                                        DATABASE_INCARNATION# GUA      STORAGE_SIZE
 ----------------- --------------------------------------------------------------------------- --------------------- --- -----------------
-BEFORE_20190507_01
+before_update
         120242924 07-MAY-19 10.51.36.000000000 AM                                                                 2 YES         104857600
 ```
 
