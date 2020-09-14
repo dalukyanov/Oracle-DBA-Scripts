@@ -83,6 +83,12 @@ END;
 
 4. Загрузка планов запросов из AWR в SQL Tuning Set
 
+begin_snap и end_snap можно взять из запроса:
+
+```sql
+select min(snap_id) "begin_snap", max(snap_id) "end_snap" from dba_hist_snapshot;
+```
+
 ```sql
 DECLARE
   cur sys_refcursor;
