@@ -132,3 +132,21 @@ BEGIN
 END;
 /
 ```
+
+**P.S.** В случае, если требуется зафиксировать какой-то конкретный план:
+
+```sql
+SET SERVEROUTPUT ON
+DECLARE
+  l_plans_altered  PLS_INTEGER;
+BEGIN
+  l_plans_altered := DBMS_SPM.alter_sql_plan_baseline(
+    sql_handle      => 'SQL_d4ab20f5c5a232b7',
+    plan_name       => 'SQL_PLAN_d9at0yr2u4cpr217cac12',
+    attribute_name  => 'fixed',
+    attribute_value => 'YES');
+
+  DBMS_OUTPUT.put_line('Plans Altered: ' || l_plans_altered);
+END;
+/
+```
