@@ -1,10 +1,9 @@
 # Загрузка планов запросов из AWR в SQL Plan Baseline
 
-1. Определение, какие планы существуют для запроса.
+1. Определение, для каких запросов имеется статистика выполнения
 
 ```sql
-SELECT DISTINCT PLAN_HASH_VALUE,SQL_ID  FROM DBA_HIST_SQLSTAT
-WHERE SQL_ID='43h973m25jv68';
+SELECT DISTINCT PLAN_HASH_VALUE,SQL_ID  FROM DBA_HIST_SQLSTAT WHERE SQL_ID='43h973m25jv68';
 ```
 
 2. Вывод различных статистик для планов выполнения.
@@ -103,6 +102,22 @@ END;
 /
 ```
 
+Также, как вариант, загрузить можно не из AWR, и из CURSOR_CACHE, если нас интересуют лишь те запросы, которые находятся там.
+
+```sql
+DECLARE
+  cur sys_refcursor;
+BEGIN
+  OPEN cur FOR
+    SELECT VALUE(p)
+    FROM TABLE(DBMS_SQLTUNE.SELECT_CURSOR_CACHE(basic_filter=>'sql_id = ''43h973m25jv68''',attribute_list=>'ALL')
+              ) p;
+     DBMS_SQLTUNE.LOAD_SQLSET( sqlset_name=> 'STS_43h973m25jv68', populate_cursor=>cur);
+  CLOSE cur;
+END;
+/
+```
+
 5. Посмотреть загруженную информацию
 
 ```sql
@@ -126,6 +141,21 @@ SELECT
              );
 ```
 
+На данном этапе в SQL Tuning Set'е может находиться довольно много запросов. И, если загрузить все из них в качестве SQL Plan Baseline, то все автоматически получат статус Accepted. Я так и не нашёл способ, как на это повлиять.
+Поэтому, грузим лишь тот план запроса, который выполняется в данный момент. Примем его за базовый (условно хороший, если хоть как-то выполняется). Для этого вычистим из STS все планы, кроме него.
+
+```sql
+BEGIN
+  DBMS_SQLTUNE.DELETE_SQLSET (
+      sqlset_name  => 'STS_43h973m25jv68'
+,     basic_filter => 'plan_hash_value != 150806729'
+);
+END;
+/
+```
+
+Можно проверить содержимое STS запросом выше.
+
 6. Загрузка планов из SQL Tuning Set в SQL Plan Baseline.
 
 ```sql
@@ -139,7 +169,63 @@ END;
 /
 ```
 
-**P.S.** В случае, если требуется зафиксировать какой-то конкретный план:
+7. Evolve Baseline
+
+Если всё ок, один базовый план загружен, работает, и Oracle AUTO-CAPTURE нашёл и добавил ещё некоторые планы. Они будут не Accepted. Для их использования их необходимо верифицировать.
+Проводим процедуру верификации так
+
+```sql
+SET LONG 100000
+SELECT DBMS_SPM.evolve_sql_plan_baseline(sql_handle => 'SQL_a9fb2c232750c314') FROM dual;
+```
+
+Либо так
+
+```sql
+DECLARE
+  res  varchar(32767);
+BEGIN
+  res := DBMS_SPM.evolve_sql_plan_baseline(sql_handle => 'SQL_a9fb2c232750c314');
+  DBMS_OUTPUT.put_line('Evolved: ' || res);
+END;
+/
+```
+
+Если один из имеющихся планов имеет лучшую производительность, чем базовый план, он будет принят (Accepted), и начнёт использоваться в запросах.
+
+
+**P.S.** Если что-то пошло не так
+
+Посмотреть загруженную информацию по запросу можно:
+
+```sql
+select * from dba_sql_plan_baselines order by created desc;
+```
+
+Если уже знаем название плана, и надо узнать лишь SQL_HANDLE, то так:
+
+```sql
+select * from dba_sql_plan_baselines where plan_name = 'SQL_PLAN_amytc4cmp1hsn268d3985';
+select * from dba_sql_plan_baselines where sql_handle = 'SQL_a9fb2c232750c314' order by accepted desc;
+```
+
+Удалить отдельный план из бейзлайна, либо весь бейзлайн:
+
+```sql
+SET SERVEROUTPUT ON
+DECLARE
+  l_plans_dropped  PLS_INTEGER;
+BEGIN
+  l_plans_dropped := DBMS_SPM.drop_sql_plan_baseline (
+    sql_handle => 'SQL_a9fb2c232750c314',
+    plan_name  => 'SQL_PLAN_amytc4cmp1hsn268d3985');
+    
+  DBMS_OUTPUT.put_line(l_plans_dropped);
+END;
+/
+```
+
+**P.P.S.** В случае, если требуется зафиксировать какой-то конкретный план:
 
 ```sql
 SET SERVEROUTPUT ON
